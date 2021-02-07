@@ -8,20 +8,30 @@ import Carousel from '../components/Carousel'
 import CarouselItem from '../components/CarouselItem'
 import PropType from 'prop-types'
 import Header from '../components/Header'
-import store from '../../store.json'
 
+const API = 'https://rickandmortyapi.com/api/character';
 const APIdead = 'https://rickandmortyapi.com/api/character/?status=dead'
 const APIrobot = 'https://rickandmortyapi.com/api/character/?species=robot'
 const APIcreature = 'https://rickandmortyapi.com/api/character/?species=creature'
 
 const Home = props => {
     const { myList, search, personajes, dead, robot, creatures } = props
-    const API = 'https://rickandmortyapi.com/api/character';
+    
     const [state, setState] = useState({
         loading: true
     })
     const [person, setPerson] = useState([]);
+    
+    const Get = async () => {
+        setState({ loading: true })
+        const dead = await fetch(API)
+        const deadJSON = await dead.json()
+        setState({ loading: false })
+        setPerson(deadJSON.results)
+    }
+
     const [personajesDead, setPersonaDead] = useState([]);
+    
     const alive = async () => {
         setState({ loading: true })
         const dead = await fetch(APIdead)
@@ -46,7 +56,7 @@ const Home = props => {
     }
 
     useEffect(() => {
-        setPerson(store.results)
+        Get()
         alive()
         robotx()
         Creatures()
